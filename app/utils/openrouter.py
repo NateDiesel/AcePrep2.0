@@ -1,31 +1,24 @@
 import os
 import requests
 
-API_URL = "https://openrouter.ai/api/v1/chat/completions"
-MODEL = "openrouter/mistralai/mixtral-8x7b"
-API_KEY = os.getenv("OPENROUTER_API_KEY")
-
-
 def chat_completion(prompt: str) -> str:
-    """Send a prompt to OpenRouter and return the response text."""
-    if not API_KEY:
-        raise EnvironmentError("OPENROUTER_API_KEY is missing or not set.")
-
-    if not prompt or len(prompt.strip()) < 1:
-        raise ValueError("Prompt is empty or invalid.")
+    OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
+    if not OPENROUTER_API_KEY:
+        raise ValueError("❌ OPENROUTER_API_KEY is not set in environment")
 
     headers = {
-        "Authorization": f"Bearer {API_KEY}",
-        "Content-Type": "application/json",
+        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+        "Content-Type": "application/json"
     }
 
     payload = {
-        "model": MODEL,
-        "messages": [{"role": "user", "content": prompt}],
+        "model": "mistralai/mistral-7b-instruct",  # or another available model
+        "messages": [
+            {"role": "user", "content": prompt}
+        ]
     }
 
-    response = requests.post(API_URL, headers=headers, json=payload)
-    response.raise_for_status()
+    response = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=payload)
+    response.raise_for_status()  # Raises a helpful error if response was 4xx or 5xx
 
-    data = response.json()
-    return data["choices"][0]["message"]["content"]
+    return response.json()["choices"][0]["message"]["content"]
