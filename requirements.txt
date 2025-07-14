@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+jinja2
+python-dotenv
+email-validator
+reportlab
+requests
+sendgrid
+together
+stripe==8.0.0
+python-docx
+pdfplumber
+beautifulsoup4
+python-multipart

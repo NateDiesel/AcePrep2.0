@@ -1,0 +1,8 @@
+# NOTE: This is a placeholder to show what we’ll do next.
+# The actual update will modify generate_cheat_sheet() to:
+# - use resume context
+# - use job description
+# - use GPT to dynamically generate:
+#   * 15–20 job-specific questions
+#   * 5–10 resume-crossover questions
+#   * Suggested questions for HR, Manager, CEO
