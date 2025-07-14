@@ -1,32 +1,28 @@
-import os
-import requests
+from app.utils.openrouter import chat_completion  # ✅ Using OpenRouter
 
-OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
-OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
-MODEL = "mistralai/mixtral-8x7b-instruct"
+def generate_cheat_sheet(resume_text, job_title, job_description, interviewer_type="Manager"):
+    if not all([resume_text, job_title, job_description]):
+        raise ValueError("❌ Missing required context for OpenRouter prompt.")
 
-def chat_completion(prompt):
-    if not OPENROUTER_API_KEY:
-        raise EnvironmentError("❌ OPENROUTER_API_KEY is missing or not set.")
+    prompt = f"""
+You are an expert technical interview coach. Based on the following details, generate a full interview prep pack.
 
-    headers = {
-        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-        "Content-Type": "application/json",
-        "HTTP-Referer": "https://yourdomain.com",  # ✅ Customize if needed
-        "X-Title": "AcePrep2.0"
-    }
+Job Title: {job_title}
 
-    payload = {
-        "model": MODEL,
-        "messages": [
-            {"role": "system", "content": "You are an expert technical interview coach."},
-            {"role": "user", "content": prompt}
-        ],
-        "temperature": 0.7,
-        "max_tokens": 1024
-    }
+Job Description:
+{job_description}
 
-    response = requests.post(OPENROUTER_API_URL, headers=headers, json=payload)
-    response.raise_for_status()
+Resume Content:
+{resume_text}
 
-    return response.json()["choices"][0]["message"]["content"]
+Instructions:
+1. Generate 15–20 tailored interview questions for this role.
+2. Generate 5–10 crossover questions based on the resume.
+3. Provide 3–5 smart questions to ask the interviewer ({interviewer_type}).
+
+Label each section:
+- Top Interview Questions (Tailored)
+- Resume-Based Crossover Questions
+- Questions to Ask the Interviewer ({interviewer_type})
+"""
+    return chat_completion(prompt)
