@@ -1,48 +1,32 @@
-<<<<<<< HEAD
-import re
-from app.utils.together import chat_completion
+import os
+import requests
 
-def generate_cheat_sheet(resume_text, job_title, job_description, interviewer_type="Manager"):
-    # 🛡️ Defensive checks
-    if not all([resume_text, job_title, job_description]):
-        raise ValueError("❌ Missing required context for Together.ai prompt.")
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
+OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
+MODEL = "mistralai/mixtral-8x7b-instruct"
 
-=======
-from app.utils.together import chat_completion
+def chat_completion(prompt):
+    if not OPENROUTER_API_KEY:
+        raise EnvironmentError("❌ OPENROUTER_API_KEY is missing or not set.")
 
-def generate_cheat_sheet(resume_text, job_title, job_description, interviewer_type="Manager"):
->>>>>>> 74eb77e (🚀 Initial OpenRouter-powered production release)
-    prompt = f"""
-You are an expert technical interview coach. Based on the following details, generate a full interview prep pack.
+    headers = {
+        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://yourdomain.com",  # ✅ Customize if needed
+        "X-Title": "AcePrep2.0"
+    }
 
-Job Title: {job_title}
+    payload = {
+        "model": MODEL,
+        "messages": [
+            {"role": "system", "content": "You are an expert technical interview coach."},
+            {"role": "user", "content": prompt}
+        ],
+        "temperature": 0.7,
+        "max_tokens": 1024
+    }
 
-Job Description:
-{job_description}
+    response = requests.post(OPENROUTER_API_URL, headers=headers, json=payload)
+    response.raise_for_status()
 
-Resume Content:
-{resume_text}
-
-Instructions:
-<<<<<<< HEAD
-1. Generate 15–20 tailored interview questions for this role.
-2. Generate 5–10 crossover questions based on the resume.
-3. Provide 3–5 smart questions to ask the interviewer ({interviewer_type}).
-=======
-1. Generate 15–20 tailored interview questions specifically for this role.
-2. Generate 5–10 questions that connect the resume background to the job (e.g., from healthcare to tech).
-3. Based on the interviewer type ({interviewer_type}), generate 3–5 smart questions the candidate can ask the interviewer.
->>>>>>> 74eb77e (🚀 Initial OpenRouter-powered production release)
-
-Label each section:
-- Top Interview Questions (Tailored)
-- Resume-Based Crossover Questions
-- Questions to Ask the Interviewer ({interviewer_type})
-"""
-<<<<<<< HEAD
-
-    print("🔍 Prompt preview (first 200 chars):\n", prompt[:200], "...\n")
-    return chat_completion(prompt)
-=======
-    return chat_completion(prompt)
->>>>>>> 74eb77e (🚀 Initial OpenRouter-powered production release)
+    return response.json()["choices"][0]["message"]["content"]
