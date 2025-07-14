@@ -60,18 +60,16 @@ async def generate(
     if not email:
         return templates.TemplateResponse("form.html", {"request": request, "error": "Email is required."})
 
-    if not job_link and not job_description:
-        return templates.TemplateResponse("form.html", {"request": request, "error": "Job link or description is required."})
+    # Extract job info from job link if present
+    if job_link:
+        job_data_raw = extract_job_description_from_url(job_link)
+        if isinstance(job_data_raw, dict):
+            job_title = job_title or job_data_raw.get("job_title", "")
+            job_description = job_description or job_data_raw.get("job_description", "")
+        else:
+            job_description = job_description or job_data_raw or "No description provided."
 
-    # Extract job info from link
-    job_data_raw = extract_job_description_from_url(job_link) if job_link else ""
-    if isinstance(job_data_raw, dict):
-        job_title = job_title or job_data_raw.get("job_title", "")
-        job_description = job_description or job_data_raw.get("job_description", "")
-    else:
-        job_description = job_description or job_data_raw or "No description provided."
-
-    # Resume context
+    # Extract resume content if uploaded
     resume_context = {}
     resume_text = ""
     if resume_file:
@@ -84,10 +82,17 @@ async def generate(
         job_role = job_role or resume_context.get("job_role", "")
         company_name = company_name or resume_context.get("company_name", "")
 
-    # === GPT + PDF Generation ===
-    cheat_sheet_text = generate_cheat_sheet(resume_text, job_title, job_description, interviewer_type="Manager")
+    # If nothing was submitted at all, fail early
+    if not resume_text and not job_description:
+        return templates.TemplateResponse("form.html", {"request": request, "error": "Please submit either a resume or job description."})
 
-    filename = sanitize_filename(f"{job_title}_AcePrep.pdf")
+    # Generate GPT interview pack
+    try:
+        cheat_sheet_text = generate_cheat_sheet(resume_text, job_title, job_description, interviewer_type="Manager")
+    except Exception as e:
+        return templates.TemplateResponse("form.html", {"request": request, "error": f"Error: {e}"})
+
+    filename = sanitize_filename(f"{job_title or 'AcePrep'}_Interview_Prep.pdf")
     output_path = OUTPUT_DIR / filename
 
     export_cheat_sheet_pdf(
