@@ -1,4 +1,4 @@
-from app.utils.openrouter import chat_completion  # ✅ Using OpenRouter
+from app.utils.openrouter import chat_completion
 
 def generate_cheat_sheet(resume_text, job_title, job_description, interviewer_type="Manager"):
     if not all([resume_text, job_title, job_description]):
