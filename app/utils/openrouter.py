@@ -12,13 +12,13 @@ def chat_completion(prompt: str) -> str:
     }
 
     payload = {
-        "model": "mistralai/mistral-7b-instruct",  # or another available model
+        "model": "openchat/openchat-3.5",  # ✅ Free model to avoid 402 errors
         "messages": [
             {"role": "user", "content": prompt}
         ]
     }
 
     response = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=payload)
-    response.raise_for_status()  # Raises a helpful error if response was 4xx or 5xx
+    response.raise_for_status()
 
     return response.json()["choices"][0]["message"]["content"]
