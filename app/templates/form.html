@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AcePrep: Interview Cheat Sheet</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"><link rel="icon" href="/static/favicon.ico">
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+<main class="container">
+  <article>
+    <h2>🎯 <strong>AcePrep: Interview Cheat Sheet</strong></h2>
+    {% if error %}<p style="color:red;">{{ error }}</p>{% endif %}
+    <form method="post" action="/generate" enctype="multipart/form-data">
+      <input type="url" name="job_link" placeholder="Job link (optional)">
+      <input type="text" name="job_title" placeholder="Job title (optional)">
+      <input type="text" name="company_name" placeholder="Company (optional)">
+      <input type="text" name="role" placeholder="Interviewer type (HR / Manager / CEO)">
+      <input type="text" name="name" placeholder="Your name (optional)">
+      <input type="file" name="resume" accept=".pdf,.docx">
+      <button type="submit">Generate Cheat Sheet (PDF)</button>
+    </form>
+  </article>
+</main>
+</body>
+</html>

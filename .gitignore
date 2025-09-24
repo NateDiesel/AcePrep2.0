@@ -1,0 +1,15 @@
+﻿# venv & local env
+.venv/
+.env
+
+# Python
+__pycache__/
+*.pyc
+
+# Generated runtime/output
+app/output/
+app/uploads/
+
+# Docs caches
+.DS_Store
+Thumbs.db
