@@ -13,3 +13,9 @@ app/uploads/
 # Docs caches
 .DS_Store
 Thumbs.db
+
+# .gitignore (add or update)
+app/output/
+app/uploads/
+sample_output/*
+!sample_output/aceprep-sample.pdf
