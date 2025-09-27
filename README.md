@@ -13,6 +13,7 @@ Tailored interview prep in seconds: upload your resume, paste a job link, and ge
   <img alt="OpenRouter" src="https://img.shields.io/badge/LLM-OpenRouter-9cf">
   <img alt="License" src="https://img.shields.io/badge/License-MIT-lightgrey">
   <img alt="CI" src="https://github.com/NateDiesel/AcePrep2.0/actions/workflows/ci.yml/badge.svg">
+  <img alt="CI" src="https://github.com/NateDiesel/AcePrep2.0/actions/workflows/ci.yml/badge.svg">
 </p>
 
 ---
